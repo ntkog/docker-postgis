@@ -75,6 +75,25 @@ else
 		su - postgres -c "psql template_postgis -c 'CREATE EXTENSION postgis_topology;'"
 	fi
 
+	# Added another extensions by default
+	# According to :
+
+  echo "Enabling postgis_sfcgal in the template"
+	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION postgis_sfcgal;'"
+
+	echo "Enabling fuzzystrmatch in the template"
+	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION fuzzystrmatch;'"
+
+	echo "Enabling address_standardizer in the template"
+	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION address_standardizer;'"
+
+	echo "Enabling address_standardizer_data_us in the template"
+	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION address_standardizer_data_us;'"
+
+	echo "Enabling postgis_tiger_geocoder in the template"
+	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION postgis_tiger_geocoder;'"
+
+
 	# Needed when importing old dumps using e.g ndims for constraints
 	# Ignore error if it doesn't exists
 	echo "Loading legacy sql"

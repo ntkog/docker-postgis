@@ -1,0 +1,44 @@
+diff --git a/Dockerfile b/Dockerfile
+index 8daba4a..eec0538 100644
+--- a/Dockerfile
++++ b/Dockerfile
+@@ -17,6 +17,9 @@ RUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-k
+ # The following packages have unmet dependencies:
+ RUN apt-get update; apt-get install -y postgresql-client-10 postgresql-common postgresql-10 postgresql-10-postgis-2.4 postgresql-10-pgrouting netcat postgis
+ 
++# CREATE gis-data folder
++RUN mkdir -p /var/tmp/gis-data
++
+ # Open port 5432 so linked containers can see them
+ EXPOSE 5432
+ 
+diff --git a/setup-database.sh b/setup-database.sh
+index ded5a9f..4005c10 100644
+--- a/setup-database.sh
++++ b/setup-database.sh
+@@ -75,6 +75,25 @@ else
+ 		su - postgres -c "psql template_postgis -c 'CREATE EXTENSION postgis_topology;'"
+ 	fi
+ 
++	# Added another extensions by default
++	# According to :
++
++  echo "Enabling postgis_sfcgal in the template"
++	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION postgis_sfcgal;'"
++
++	echo "Enabling fuzzystrmatch in the template"
++	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION fuzzystrmatch;'"
++
++	echo "Enabling address_standardizer in the template"
++	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION address_standardizer;'"
++
++	echo "Enabling address_standardizer_data_us in the template"
++	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION address_standardizer_data_us;'"
++
++	echo "Enabling postgis_tiger_geocoder in the template"
++	su - postgres -c "psql template_postgis -c 'CREATE EXTENSION postgis_tiger_geocoder;'"
++
++
+ 	# Needed when importing old dumps using e.g ndims for constraints
+ 	# Ignore error if it doesn't exists
+ 	echo "Loading legacy sql"
